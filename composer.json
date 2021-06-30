@@ -1,0 +1,21 @@
+{
+    "name": "iras/lumen-hprose",
+    "description": "Hprose for Lumen",
+    "keywords": ["hprose", "lumen"],
+    "license": "MIT",
+    "require": {
+        "php": ">=7.2.5",
+        "ext-json": "*",
+        "ext-swoole": "*",
+        "hprose/hprose": "^2.0",
+        "hprose/hprose-swoole": "^2.0",
+        "nunomaduro/collision": "^5.1",
+        "laravel/lumen-framework": "^7.0|^8.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Iras\\LumenHprose\\": "src/"
+        }
+    },
+    "minimum-stability": "stable"
+}
