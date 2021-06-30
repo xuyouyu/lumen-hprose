@@ -7,7 +7,7 @@ use Illuminate\Console\Command;
 use Throwable;
 
 /**
- * Class HproseClientDemo.
+ * 测试案例
  */
 class HproseClientDemo extends Command
 {

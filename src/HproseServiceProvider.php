@@ -26,15 +26,10 @@ class HproseServiceProvider extends ServiceProvider
      */
 //    public function register()
 //    {
-//        if ('swoole' === config('hprose.server') && !extension_loaded('swoole')) {
-//            Config::set('hprose.server', 'socket');
-//        }
 //    }
-    /**
-     * Get the services provided by the provider.
-     *
-     * @return array
-     */
+
+
+
     public function loadCommands()
     {
         if ($this->app->runningInConsole()) {

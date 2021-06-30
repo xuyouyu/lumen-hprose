@@ -13,7 +13,7 @@ use Laravel\Lumen\Application;
 use RuntimeException;
 
 /**
- * Class HproseSocket.
+ * 启动服务
  */
 class HproseServer extends Command
 {
@@ -47,7 +47,22 @@ class HproseServer extends Command
         ServerLaunch::run($app);
         $this->outputInfo();
         $server = app('hprose.server');
+        $server->set([
+            //指定启动worker的进程数
+            'worker_num' => 8,
 
+            //每个worker进程最大运行处理任务的个数（达到该设置，会自动重启）
+            'max_request' => 10000,
+
+            //服务器允许维持最大的TCP连接数 不能超过操作系统ulimit -n的值
+            'max_conn' => 10000,
+
+            //指定数据包分发策略：
+            // 1-轮询模式：轮询分配给每一个worker进程
+            // 2-固定模式：根据连接文件描述符分配worker 保证同一个连接发来的数据只被一个worker处理
+            // 3-争抢模式：主进程会根据每个worker的闲忙程度选择投递，只会投递给闲置状态的worker进程
+            'dispath_mode' => 1,
+        ]);
         // 服务启动
         $server->start();
 

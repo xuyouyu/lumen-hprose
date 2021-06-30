@@ -71,11 +71,7 @@ class ServerLaunch
             foreach ($middlewareClasses as $middlewareClass) {
                 $middleware = new $middlewareClass();
 
-                /**
-                 * 过滤器和中间件的使用.
-                 * @see https://github.com/hprose/hprose-php/wiki/11-Hprose-%E8%BF%87%E6%BB%A4%E5%99%A8
-                 * @see https://github.com/hprose/hprose-php/wiki/12-Hprose-%E4%B8%AD%E9%97%B4%E4%BB%B6
-                 */
+
                 if ($middleware instanceof BeforeFilterHandler) {
                     $server->addBeforeFilterHandler($middleware);
                 }

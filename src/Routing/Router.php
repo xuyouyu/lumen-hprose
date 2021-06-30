@@ -51,8 +51,6 @@ class Router
      * @param string          $name
      * @param string|callable $action
      * @param array           $options
-     *                                 是一个关联数组，它里面包含了一些对该服务函数的特殊设置，详情参考hprose-php文档介绍
-     *                                 https://github.com/hprose/hprose-php/wiki/06-Hprose-%E6%9C%8D%E5%8A%A1%E5%99%A8#addfunction-%E6%96%B9%E6%B3%95
      */
     public function add(string $name, $action, array $options = []): void
     {

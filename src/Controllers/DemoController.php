@@ -3,7 +3,7 @@
 namespace Iras\LumenHprose\Controllers;
 
 /**
- * Class DemoController.
+ * 服务端demo
  */
 class DemoController
 {

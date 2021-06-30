@@ -5,10 +5,7 @@ namespace Iras\LumenHprose\Middleware\Contracts;
 use Closure;
 use stdClass;
 
-/**
- * @see https://github.com/hprose/hprose-php/wiki/12-Hprose-%E4%B8%AD%E9%97%B4%E4%BB%B6
- * Class InvokeHandler.
- */
+
 abstract class InvokeHandler
 {
     /**
