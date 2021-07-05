@@ -82,7 +82,7 @@ class HproseServer extends Command
     protected function start(Application $app)
     {
         if ($this->getPid()) {
-            $this->error('swoole http server is already running');
+            $this->error('swoole server is already running');
             exit(1);
         }
 
@@ -90,7 +90,7 @@ class HproseServer extends Command
 
 
         $this->outputInfo();
-        $this->info('starting swoole http server...');
+        $this->info('starting swoole server...');
         $server = app('hprose.server');
 
         $swooleSetting = config('hprose.swoole_setting');
@@ -101,7 +101,7 @@ class HproseServer extends Command
 
     protected function restart(Application $app)
     {
-        $this->info('stopping swoole http server...');
+        $this->info('stopping swoole server...');
         $pid = $this->sendSignal(SIGTERM);
         $time = 0;
         while (posix_getpgid($pid)) {
@@ -134,9 +134,9 @@ class HproseServer extends Command
     {
         $pid = $this->getPid();
         if ($pid) {
-            $this->info('swoole http server is running. master pid : ' . $pid);
+            $this->info('swoole server is running. master pid : ' . $pid);
         } else {
-            $this->error('swoole http server is not running!');
+            $this->error('swoole server is not running!');
         }
     }
 
@@ -146,7 +146,7 @@ class HproseServer extends Command
         if ($pid) {
             posix_kill($pid, $sig);
         } else {
-            $this->error('swoole http is not running!');
+            $this->error('swoole is not running!');
             exit(1);
         }
         return $pid;
