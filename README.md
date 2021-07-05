@@ -114,11 +114,13 @@ composer require iras/lumen-hprose
 ## 服务启动、停止、重启
 ```shell script
 php artisan hprose:server start  //启动
+
 php artisan hprose:server restart //重启（平滑重启）  
+
 php artisan hprose:server stop  //停止
 ```
 
 ## 调试
 ```shell script
-php artisan hprose:client test
+php artisan hprose:client demo
 ```
