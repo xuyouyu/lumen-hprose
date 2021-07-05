@@ -12,5 +12,5 @@ Router::add('test', 'Iras\LumenHprose\Controllers\DemoController@test');
 
 //路由组
 Router::group(['namespace' => 'Iras\LumenHprose\Controllers', 'prefix' => 'demo'], function ($route) {
-    $route->add('test', 'TestController@test');
+    $route->add('test', 'DemoController@test');
 });
