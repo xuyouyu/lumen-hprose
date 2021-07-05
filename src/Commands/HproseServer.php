@@ -105,9 +105,9 @@ class HproseServer extends Command
         $pid = $this->sendSignal(SIGTERM);
         $time = 0;
         while (posix_getpgid($pid)) {
-            usleep(100000);
+            sleep(1);
             $time++;
-            if ($time > 50) {
+            if ($time > 10) {
                 $this->error('timeout...');
                 exit(1);
             }
