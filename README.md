@@ -5,7 +5,8 @@
 ```shell
 composer require iras/lumen-hprose
 ```
-##配置
+
+## 配置
 >1、在 bootstrap/app.php 注册 服务组件
 >
 >>```shell
@@ -18,8 +19,8 @@ composer require iras/lumen-hprose
 >3、复制routes目录下的hprose.php到框架的routes目录
 
 
-##使用
->1、添加路由方法
+## 使用
+>添加路由方法
 >>```shell
 >> use Iras\LumenHprose\Facades\Router;   
 >>
@@ -35,6 +36,7 @@ composer require iras/lumen-hprose
 >>
 >> Router::add('demo', 'Iras\LumenHprose\Controllers\DemoController@demo');
 >> ```
+>
 >
 >具体的服务逻辑
 >>```shell
@@ -109,14 +111,14 @@ composer require iras/lumen-hprose
 >>
 >>中间件的加载顺序决定了执行顺序，注意config/hprose.php中的middleware数组元素的顺序
 >
-##服务启动、停止、重启
+## 服务启动、停止、重启
 ```shell script
 php artisan hprose:server start  //启动
 php artisan hprose:server restart //重启（平滑重启）  
 php artisan hprose:server stop  //停止
 ```
 
-##调试
+## 调试
 ```shell script
 php artisan hprose:client test
 ```
