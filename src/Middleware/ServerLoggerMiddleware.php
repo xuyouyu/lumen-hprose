@@ -11,7 +11,7 @@ use stdClass;
  * Class ServerLoggerInvokeHandler
  * @package Iras\LumenHprose\Middleware
  */
-final class ServerLoggerInvokeHandler extends InvokeHandler
+final class ServerLoggerMiddleware extends InvokeHandler
 {
 
 
