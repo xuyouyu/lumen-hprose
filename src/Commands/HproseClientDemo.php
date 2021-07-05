@@ -30,7 +30,11 @@ class HproseClientDemo extends Command
      */
     public function handle()
     {
+        //调用单个方法
         $client = new \Hprose\Socket\Client('tcp://127.0.0.1:8888', false);
-        echo $client->getServiceName();
+        echo $client->test();
+
+        //调用路由组方法（demo未路由组前缀）
+        echo $client->demo->test();
     }
 }

@@ -10,8 +10,13 @@ class DemoController
     /**
      * @return string
      */
-    public function getServiceName(): string
+    public function demo(): string
     {
-        return config('hprose.service');
+        return 'demo';
+    }
+
+    public function test(): string
+    {
+        return 'test';
     }
 }

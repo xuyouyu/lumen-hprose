@@ -4,22 +4,25 @@ namespace Iras\LumenHprose\Middleware;
 
 use Closure;
 use Illuminate\Support\Facades\Log;
-use Iras\LumenHprose\Middleware\Contracts\InvokeHandler;
+use Iras\LumenHprose\Middleware\InvokeHandler;
 use stdClass;
 
 /**
- * Class ServerLoggerInvokeHandler.
+ * Class ServerLoggerInvokeHandler
+ * @package Iras\LumenHprose\Middleware
  */
 final class ServerLoggerInvokeHandler extends InvokeHandler
 {
+
+
     /**
-     * 服务端的调用日志记录.
-     *
-     * @param          $name
-     * @param array    $args
+     * Desc： 服务端的调用日志记录.
+     * User: Administrator
+     * Time: 2021/7/5 9:46
+     * @param $name
+     * @param array $args
      * @param stdClass $context
-     * @param Closure  $next
-     *
+     * @param Closure $next
      * @return mixed
      */
     public function handle($name, array &$args, stdClass $context, Closure $next)

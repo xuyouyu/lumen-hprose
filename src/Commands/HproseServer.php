@@ -2,12 +2,12 @@
 
 namespace Iras\LumenHprose\Commands;
 
-use Hprose\Filter;
+//use Hprose\Filter;
 use Iras\LumenHprose\Facades\Router;
-use Iras\LumenHprose\Middleware\Contracts\AfterFilterHandler;
-use Iras\LumenHprose\Middleware\Contracts\BeforeFilterHandler;
-use Iras\LumenHprose\Middleware\Contracts\InvokeHandler;
-use Iras\LumenHprose\Server\ServerLaunch;
+//use Iras\LumenHprose\Middleware\Contracts\AfterFilterHandler;
+//use Iras\LumenHprose\Middleware\Contracts\BeforeFilterHandler;
+//use Iras\LumenHprose\Middleware\Contracts\InvokeHandler;
+//use Iras\LumenHprose\Server\ServerLaunch;
 use Illuminate\Console\Command;
 use Laravel\Lumen\Application;
 use RuntimeException;
@@ -22,14 +22,21 @@ class HproseServer extends Command
      *
      * @var string
      */
-    protected $signature = 'hprose:server';
+    protected $signature = 'hprose:server {action : how to handle the tcp server}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Hprose tcp server';
+    protected $description = 'Handle swoole tcp server with start | restart | reload | stop | status';
+
+
+    private const ALLOW_SERVER_TYPE = [
+        'http',
+        'tcp',
+    ];
+
 
     /**
      * Execute the console command.
@@ -44,39 +51,132 @@ class HproseServer extends Command
             throw new RuntimeException('请安装swoole扩展');
         }
 
-        ServerLaunch::run($app);
-        $this->outputInfo();
-        $server = app('hprose.server');
-        $server->set([
-            //指定启动worker的进程数
-            'worker_num' => 8,
 
-            //每个worker进程最大运行处理任务的个数（达到该设置，会自动重启）
-            'max_request' => 10000,
+        $action = $this->argument('action');
+        switch ($action) {
+            case 'start':
+                $this->start($app);
+                break;
+            case 'restart':
+                $this->restart($app);
+                break;
+            case 'reload':
+                $this->reload();
+                break;
+            case 'stop':
+                $this->stop();
+                break;
+            case 'status':
+                $this->status();
+                break;
+            default:
+                $this->error('Please type correct action . start | restart | stop | reload | status');
+        }
 
-            //服务器允许维持最大的TCP连接数 不能超过操作系统ulimit -n的值
-            'max_conn' => 10000,
-
-            //指定数据包分发策略：
-            // 1-轮询模式：轮询分配给每一个worker进程
-            // 2-固定模式：根据连接文件描述符分配worker 保证同一个连接发来的数据只被一个worker处理
-            // 3-争抢模式：主进程会根据每个worker的闲忙程度选择投递，只会投递给闲置状态的worker进程
-            'dispath_mode' => 1,
-        ]);
-        // 服务启动
-        $server->start();
-
-        return 0;
     }
+
+
+
+
+
+    protected function start(Application $app)
+    {
+        if ($this->getPid()) {
+            $this->error('swoole http server is already running');
+            exit(1);
+        }
+
+        \Iras\LumenHprose\Server\HproseServer::run($app);
+
+
+        $this->outputInfo();
+        $this->info('starting swoole http server...');
+        $server = app('hprose.server');
+
+        $swooleSetting = config('hprose.swoole_setting');
+        $server->set($swooleSetting);
+
+        $server->start();
+    }
+
+    protected function restart(Application $app)
+    {
+        $this->info('stopping swoole http server...');
+        $pid = $this->sendSignal(SIGTERM);
+        $time = 0;
+        while (posix_getpgid($pid)) {
+            usleep(100000);
+            $time++;
+            if ($time > 50) {
+                $this->error('timeout...');
+                exit(1);
+            }
+        }
+        $this->info('done');
+        $this->start($app);
+    }
+
+    protected function reload()
+    {
+        $this->info('reloading...');
+        $this->sendSignal(SIGUSR1);
+        $this->info('done');
+    }
+
+    protected function stop()
+    {
+        $this->info('immediately stopping...');
+        $this->sendSignal(SIGTERM);
+        $this->info('done');
+    }
+
+    protected function status()
+    {
+        $pid = $this->getPid();
+        if ($pid) {
+            $this->info('swoole http server is running. master pid : ' . $pid);
+        } else {
+            $this->error('swoole http server is not running!');
+        }
+    }
+
+    protected function sendSignal($sig)
+    {
+        $pid = $this->getPid();
+        if ($pid) {
+            posix_kill($pid, $sig);
+        } else {
+            $this->error('swoole http is not running!');
+            exit(1);
+        }
+        return $pid;
+    }
+
+    protected function getPid()
+    {
+        $pid_file = config('hprose.swoole_setting')['pid_file'];
+        if (file_exists($pid_file)) {
+            $pid = intval(file_get_contents($pid_file));
+            if (posix_getpgid($pid)) {
+                return $pid;
+            } else {
+                unlink($pid_file);
+            }
+        }
+        return false;
+    }
+
+
+
 
     /**
      * 输出基础信息.
      */
     protected function outputInfo(): void
     {
-        $this->comment('Service:');
-        $this->output->writeln(sprintf(' - <info>%s</info>', config('hprose.service')));
-        $this->output->newLine();
+//        $this->comment('Service:');
+//        $this->output->writeln(sprintf(' - <info>%s</info>', config('hprose.service')));
+//        $this->output->newLine();
 
         $this->comment('版本:');
         $this->output->writeln(sprintf(' - Laravel/Lumen=<info>%s</info>', app()->version()));
@@ -84,11 +184,11 @@ class HproseServer extends Command
         $this->output->newLine();
 
         $this->comment('启动的服务器类型:');
-        $this->line(sprintf(' - <info>%s</info>', config('hprose.server')));
+        $this->line(sprintf(' - <info>%s</info>', config('hprose.server_type')));
         $this->output->newLine();
 
         $this->comment('监听:');
-        $this->line(sprintf(' - <info>%s</info>', config('hprose.uri')));
+        $this->line(sprintf(' - <info>%s</info>', config('hprose.host') . ':' . config('hprose.port')));
         $this->output->newLine();
 
         $this->comment('加载的中间件:');

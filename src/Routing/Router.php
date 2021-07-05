@@ -5,29 +5,27 @@ namespace Iras\LumenHprose\Routing;
 use Illuminate\Support\Arr;
 
 /**
- * Class Router.
+ * Class Router
+ * @package Iras\LumenHprose\Routing
  */
 class Router
 {
-    /**
-     * @var array
-     */
+
     protected $groupStack = [];
 
-    /**
-     * @var array
-     */
+
     protected $methods = [];
 
-    /**
-     * @var string
-     */
+
     protected $prefix = '';
 
+
+
     /**
-     * 创建一组方法.
-     *
-     * @param array    $attributes
+     * Desc：常见路由组
+     * User: Administrator
+     * Time: 2021/7/5 9:48
+     * @param array $attributes
      * @param callable $callback
      */
     public function group(array $attributes, callable $callback): void
@@ -45,12 +43,15 @@ class Router
         array_pop($this->groupStack);
     }
 
+
+
     /**
-     * 添加方法.
-     *
-     * @param string          $name
-     * @param string|callable $action
-     * @param array           $options
+     * Desc：添加路由方法
+     * User: Administrator
+     * Time: 2021/7/5 9:49
+     * @param string $name
+     * @param $action
+     * @param array $options
      */
     public function add(string $name, $action, array $options = []): void
     {
@@ -79,9 +80,12 @@ class Router
         }
     }
 
+
+
     /**
-     * 获取所有已添加方法列表.
-     *
+     * Desc：获取所有的方法
+     * User: Administrator
+     * Time: 2021/7/5 9:49
      * @return array
      */
     public function getMethods(): array
@@ -89,11 +93,12 @@ class Router
         return $this->methods;
     }
 
+
     /**
-     * 合并最后一组属性.
-     *
+     * Desc：
+     * User: Administrator
+     * Time: 2021/7/5 9:49
      * @param array $attributes
-     *
      * @return array
      */
     protected function mergeLastGroupAttributes(array $attributes): array
@@ -105,12 +110,14 @@ class Router
         return $this->mergeGroup($attributes, end($this->groupStack));
     }
 
+
+
     /**
-     * 合并新加入的组.
-     *
+     * Desc：
+     * User: Administrator
+     * Time: 2021/7/5 9:50
      * @param array $new
      * @param array $old
-     *
      * @return array
      */
     protected function mergeGroup(array $new, array $old): array
@@ -121,12 +128,14 @@ class Router
         return array_merge_recursive(Arr::except($old, ['namespace', 'prefix']), $new);
     }
 
+
+
     /**
-     * 格式化命名空间.
-     *
+     * Desc：格式化命名空间
+     * User: Administrator
+     * Time: 2021/7/5 9:50
      * @param array $new
      * @param array $old
-     *
      * @return string|null
      */
     protected function formatNamespace(array $new, array $old): ?string
@@ -141,12 +150,14 @@ class Router
         return Arr::get($old, 'namespace');
     }
 
+
+
     /**
-     * 解析控制器.
-     *
-     * @param string|null $namespace
-     * @param string      $controller
-     *
+     * Desc：解析控制器.
+     * User: Administrator
+     * Time: 2021/7/5 9:50
+     * @param $namespace
+     * @param string $controller
      * @return array
      */
     protected function parseController($namespace, string $controller): array
@@ -160,12 +171,15 @@ class Router
         return [$class, $method];
     }
 
+
+
+
     /**
-     * 格式化前缀
-     *
+     * Desc：格式化前缀
+     * User: Administrator
+     * Time: 2021/7/5 9:50
      * @param array $new
      * @param array $old
-     *
      * @return string
      */
     protected function formatPrefix(array $new, array $old): string
@@ -177,12 +191,15 @@ class Router
         return Arr::get($old, 'prefix', '');
     }
 
+
+
     /**
-     * 添加匿名函数.
-     *
+     * Desc：添加匿名函数
+     * User: Administrator
+     * Time: 2021/7/5 9:50
      * @param callable $action
-     * @param string   $alias
-     * @param array    $options
+     * @param string $alias
+     * @param array $options
      */
     private function addFunction(callable $action, string $alias, array $options): void
     {
@@ -191,13 +208,16 @@ class Router
         app('hprose.server')->addFunction($action, $alias, $options);
     }
 
+
+
     /**
-     * 添加类方法.
-     *
+     * Desc：添加方法
+     * User: Administrator
+     * Time: 2021/7/5 9:51
      * @param string $method
-     * @param object $class
+     * @param $class
      * @param string $alias
-     * @param array  $options
+     * @param array $options
      */
     private function addMethod(string $method, $class, string $alias, array $options): void
     {

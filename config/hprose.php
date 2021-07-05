@@ -1,22 +1,33 @@
 <?php
 
 return [
+    //监听的IP
+    'host' => '127.0.0.1',
+    //端口
+    'port' => 8888,
 
+    //服务类型（tcp or http）
+    'server_type'=>'tcp',
 
-    //服务名称
-    'service' => env('HPROSE_SERVICE'),
-
-    //Debug 模式
-    'debug' => env('HPROSE_DEBUG', false),
-
-    //服务类型（http or tcp）
-    'server' => env('HPROSE_SERVER', 'tcp'),
-
-    //监听地址以及端口（tcp://0.0.0.0:8888  or http://localhost:8888）
-    'uri' => env('HPROSE_URI', 'tcp://0.0.0.0:8888'),
+    'debug'=>true,
 
     //中间件
     'middleware' => [
-        Iras\LumenHprose\Middleware\ServerLoggerInvokeHandler::class,
+        'log'=>Iras\LumenHprose\Middleware\ServerLoggerMiddleware::class,//调用日志记录中间件
     ],
+
+
+
+    //swoole 启动设置，具体参考swoole文档
+    'swoole_setting'=>[
+        'daemonize' => 0,
+        'dispatch_mode' => 2,
+        'worker_num' => 4,
+        'max_request' => 5000,
+        'log_file' => storage_path('logs/swoole.log'),
+        'log_level' => 5,
+        'pid_file' => storage_path('logs/swoole.pid'),
+        'open_tcp_nodelay' => 1,
+    ],
+
 ];
